@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block style %}
+.rounded{
+	border-radius: 40px;
+	margin-top:10px;
+	background: #6F6057;
+	overflow:hidden;
+}
+img{
+	max-width:100%;
+}
+{% endblock style %}
+{% block content %}
+<div class="row">
+	<blockquote class="blockquote-reverse">		
+		<span class="lead">"...to empower local people with particular emphasis on students through information and resources!"</span><br />
+		We ask <span class="bg-primary">minimum of 1 dollar <u>to express commitment</u></span> for <del>sponsering a studentneed</del> before we contact you for further information! 
+	</blockquote>
+</div>
+
+{% comment %}{% if user and not user.is_anonymous %}
+   {% include 'studentneed_list.html' %}
+
+<a>Hello, {{ user.get_full_name }}!</a>
+ {{ user.email }}
+  <br>
+  <a href="{% url 'logout' %}">Logout</a>
+{% else %}
+  <a href="{% url 'social:begin' 'facebook' %}?next={{ request.path }}">Login with Facebook</a>
+  {% endif %} {% endcomment %}
+  <div class="row rounded row-centered">
+	{% for need in needs %}
+	<div class="col-xs-6 col-md-3 col-centered" style="padding-top:25px; color:black;">
+		{% if need.student.get_image_url %}
+		<a href="{% url 'student_detail' pk=need.student.id %}">
+			<img src="{{need.student.get_image_url}}" class="img-responsive dynamicheight img-circle center-block" alt="Student" />
+		</a>
+        {% else %}
+       		<a href="{% url 'student_detail' pk=need.student.id %}">
+			<img src="/media/students/aatma-jaagaran/osi_keyhole_300X300_90ppi_0.png" class="img-responsive dynamicheight img-circle center-block" alt="Default Logo here" />
+		</a>
+		{% endif %}
+		<dl>
+			<dt><a href="{% url 'studentneed_detail' pk=need.id %}">-Click to know the need in Detail-</a></dt>
+			<dd>{{need}}</dd>
+			<dt>Description (in 30 characters):</dt>
+			<dd><p>{{ need.description|linebreaks|truncatechars:53 }}</p></dd>
+			<dt>Progress:</dt>
+			<dd>{{need.achievement}}/{{need.target}} completed!</dd>
+
+		</dl>
+		{% if user and not user.is_anonymous %}
+			{% if need.need.id == 2 %}
+				<a href="{% url 'sponser' pk=need.id %}"><button type="button" class="btn btn-success">Donate Me</button></a>
+			{% else %}			
+			<a href="{% url 'sponser' pk=need.id %}"><button type="button" class="btn btn-success">Sponser Me</button></a>
+			{% endif %}
+		{% else %}
+			{% if need.need.id == 2 %}
+				<a href="{% url 'sponser' pk=need.id %}"><button type="button" class="btn btn-success">Donate Me</button></a>
+			{% else %}			
+			<a href="{% url 'social:begin' 'facebook' %}?next={{request.path}}"><button type="button" class="btn btn-warning">Login to Sponser Me</button></a>
+			{% endif %}			
+		{% endif %}
+	</div>
+	{% endfor %}
+</div>
+<div class="row" style="padding-top:15px;">
+	<p class="lead" style="margin:10px;">
+	Who we are? What we do? Why are we here? And what is our purpose? So many questions, but what can we do? What do 'we' refer to? (Will write about it later - when technical contribution is sufficient for the project :)
+	</p>
+</div>
+{% endblock content %}
+{% block jquery %}
+function scale_image(){
+	var div = $('.dynamicheight');
+	var width = div.width();
+	div.css('height', width);
+}
+scale_image();
+{% endblock jquery %}
+{% block wrjquery %}
+function scale_image(){
+	var div = $('.dynamicheight');
+	var width = div.width();
+	div.css('height', width);
+}
+scale_image();
+{% endblock wrjquery %}

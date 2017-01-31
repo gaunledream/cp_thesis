@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content%}
+<div class="col-sm-6 col-sm-offset-3 jumbotron text-center">
+    <form action="{% url "student_delete" pk=student.id %}" class="form-signin" role="form" method="post">
+        {% csrf_token %}
+        <p>Sure to delete "{{ object.display_name }}" profile? </p>
+        <input type="submit" class="btn btn-danger" value="Yes, Delete."/>
+        <a href="{% url "student_detail" pk=student.id %}"><button type="button" class="btn btn-info">No, cancel</button></a>
+    </form>
+</div>
+
+{% endblock %}

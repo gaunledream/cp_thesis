@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block style %}
+.rounded{
+  border-radius: 40px;
+  margin-top:10px;
+  background: #6F6057;
+  overflow:hidden;
+}
+img{
+  max-width:100%;
+}
+{% endblock style %}
+{% block content %}
+
+    <div class="col-sm-8 col-sm-offset-2">
+          <h4 class="alert alert-info">List of All Public Students are visible for all visitors! Logged in users can see local students from the village or school too!<a href="{% url 'social:begin' 'facebook' %}?next={{ request.path }}">here</a></h4>
+    
+          <form method="get" action="">
+              <input type="text" placeholder="Search with village, school, or student name" name="query" value="{{ request.GET.query }}"/>
+              <input type="submit" value="Search" />
+          </form>
+    {% if needs %}
+  <div class="row row-centered rounded">
+  {% for need in needs %}
+    <div class="col-xs-4 col-centered" style="padding-top:25px; color:black;">
+      {% if need.student.get_image_url %}
+        <a href="{% url 'student_detail' pk=need.student.id %}">
+          <img src="{{need.student.get_image_url}}" class="img-responsive dynamicheight img-circle center-block" alt="Student" />
+        </a>
+      {% else %}
+        <a href="{% url 'student_detail' pk=need.student.id %}">
+        <img src="/media/None/Paramahansa_Yogananda_Standard_Pose.jpg" class="img-responsive dynamicheight img-circle center-block" alt="Default Logo here" />
+        </a>
+      {% endif %}
+      <dl>
+        <dt><a href="{% url 'studentneed_detail' pk=need.id %}">-Click to know the need in Detail-</a></dt>
+        <dd>{{need}}</dd>
+        <dt>Description (in 30 characters):</dt>
+        <dd><p>{{ need.description|linebreaks|truncatechars:53 }}</p></dd>
+        <dt>Progress:</dt>
+        <dd>{{need.achievement}}/{{need.target}} completed!</dd>
+      </dl>
+      {% if user and not user.is_anonymous %}
+        {% if need.pk == 2 %}
+          <a href="{% url 'sponser' pk=need.id %}"><button type="button" class="btn btn-success">Donate Me</button></a>
+        {% else %}
+        <a href="{% url 'sponser' pk=need.id %}"><button type="button" class="btn btn-success">Sponser Me</button></a>
+        {% endif %}
+      {% else %}
+        {% if need.pk == 2 %}
+          <a href="{% url 'sponser' pk=need.id %}"><button type="button" class="btn btn-success">Donate Me</button></a>
+        {% else %}
+        <a href="{% url 'social:begin' 'facebook' %}?next={{request.path}}"><button type="button" class="btn btn-warning">Login to Support Me</button></a>
+        {% endif %}
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>
+{% endif %}
+    <div class="row">
+    {% for obj in object_list %}
+
+    <div class="col-sm-12">
+      <div class="thumbnail">
+
+        <div class="caption">
+          <h3><a href='{{ obj.get_absolute_url }}'>{{ obj.display_name }}</a></h3>
+          {% if obj.get_image_url %}
+          <img class="img-responsive" src='{{obj.get_image_url}}' />
+      {% endif %}
+      <p>{{ obj.description|linebreaks|truncatechars:150 }}</p>
+          <p><a href="{{ obj.get_absolute_url }}" class="btn btn-primary" role="button">View</a></p>
+        </div>
+      </div>
+    </div>
+
+      {% cycle "" "<div class='col-sm-12'><hr /></div></div><div class='row'>" %}
+    {% endfor %}
+    </div>
+{% if is_paginated %}
+  <nav>
+    <ul class="pagination">
+      {% if object_list.has_previous %}
+        <li>
+          <a href="?page={{ object_list.previous_page_number }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">
+            <span>Previous</span>
+          </a>
+        </li>
+      {% else %}
+        <li class="disabled">
+          <a href="#">
+            <span>Previous</span>
+          </a>
+        </li>
+      {% endif %}
+
+      {% for page in paginator.page_range %}
+        <li {% if page == object_list.number %}class="active"{% endif %}>
+          <a href="?page={{ page }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">{{ page }}</a>
+        </li>
+      {% endfor %}
+
+      {% if object_list.has_next %}
+        <li>
+          <a href="?page={{ object_list.next_page_number }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">
+            <span>Next</span>
+          </a>
+        </li>
+      {% else %}
+        <li {% if not object_list.has_next %}class="disabled"{% endif %}>
+          <a href="#">
+            <span>Next</span>
+          </a>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
+{% endif %}
+    </div>
+{% endblock content %}

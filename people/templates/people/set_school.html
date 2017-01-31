@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block jquery %}
+ $(function() {
+            $(".inline.{{ school_form.prefix }}").formset({
+                prefix: "{{ school_form.prefix }}",
+            })
+        })
+{% endblock jquery %}
+
+{% block content %}
+    <div class="col-sm-6 text-center">
+        <p class="lead">Here, you update the school - while setting up your school, please let us know where the school is located by updating the village too!</p>
+        <h1>Add School</h1>
+        <form action="." method="post">
+            {% csrf_token %}
+            <p class="lead">School:</p>
+                {{ school_form.as_p }}
+            <div style="background-color:rgb(233, 233, 233)">
+               <span class="lead">Village where this school is:</span><br /> {{ form.as_p }}
+            </div>
+
+            <input type="submit" value="Set your School and village" class="submit" />
+        </form>
+    </div>
+    <div class="col-sm-6">
+        <p class="lead"><u>List of Schools (School <-> Village):</u></p>
+        {% for school in list_school %}
+            {% if not "default" in school %}
+                <i class="fa fa-university" aria-hidden="true"></i> {{school}}<br />
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endblock content %}

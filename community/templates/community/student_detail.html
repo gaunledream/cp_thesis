@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load urlify %}
+{% block head_title %}
+{{ object.display_name }} | {{ block.super }}
+{% endblock head_title %}
+{% block content %}
+<div class='col-sm-8 col-sm-offset-2'>
+	{% if object.show_full_name %}
+		<h1>{{ object.first_name}} {{object.last_name}}</h1>
+	{% else %}
+		<h1>{{ object.display_name }}</h1>
+	{% endif %}
+	{% if object.get_image_url %}
+		<img src='{{ object.get_image_url }}' class='img-responsive' />
+	{% endif %}
+	{{ object.description|linebreaks }}<br/>
+	<h4> Active Needs:</h1>
+	{% for need in need_set %}
+		<div>
+		{% if need.active %}
+
+		<hr />
+		<dl>
+			<dt>Summary of the Need: </dt>
+				<dd><span style="background-color: #bbccaa">{{need}}</span> - <span style="background-color: #ccaabb">target is - {{need.target}} {{need.measurement}} </span>-> <span style="background-color: #aabbcc">Sponsers: {{need.sponsers.all}}</span><br /></dd>
+				{% if user and not user.is_anonymous %}
+					{% if need.need.id == 2 %}
+						<a href="{% url 'sponser' pk=need.id %}"><button type="button" class="btn btn-success">Donate Me</button></a>
+					{% else %}
+					<a href="{% url 'sponser' pk=need.id %}"><button type="button" class="btn btn-success">Sponser Me</button></a>
+					{% endif %}
+				{% else %}
+					{% if need.need.id == 2 %}
+						<a href="{% url 'sponser' pk=need.id %}"><button type="button" class="btn btn-success">Donate Me</button></a>
+					{% else %}
+					<a href="{% url 'social:begin' 'facebook' %}?next={{request.path}}"><button type="button" class="btn btn-warning">Login to Sponser Me</button></a>
+					{% endif %}
+				{% endif %}
+			<dt>Description of the Need:</dt>
+				<dd><p>{{need.description|linebreaks}}</p></dd>
+		</dl>
+		{% endif %}
+		</div>
+	{% endfor %}
+
+	<div class="jumbotron text-center">
+	{% if request.user.is_school_admin %}
+
+	<a href="{% url "studentneed_per_student" pk=student.id %}"><button type="button" class="btn btn-info navbar-btn">Add Need</button></a>
+	<a href="{% url "student_delete" pk=student.id %}"><button type="button" class="btn btn-info navbar-btn">Delete</button></a>
+
+	<a href="{% url "student_image" pk=student.id %}"><button type="button" class="btn btn-info navbar-btn">Add Image</button></a>
+	<a href="{% url "student_update" pk=student.id %}"><button type="button" class="btn btn-info navbar-btn">Update</button></a>
+	{% endif %}
+	</div>
+
+
+
+	<a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}">
+	Facebook
+	</a>
+
+	<a href="https://twitter.com/home?status={{ instance.content|truncatechars:80|urlify }}%20{{ request.build_absolute_uri }}">
+	Twitter
+	</a>
+
+	<a href='https://plus.google.com/share?url={{ request.build_absolute_uri }}'>
+
+
+	<a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.build_absolute_uri }}&title={{ instance.title }}&summary={{ share_string }}&source={{ request.build_absolute_uri }}">
+	Linkedin
+	</a>
+
+	<a href="http://www.reddit.com/submit?url={{ request.build_absolute_uri }}&title={{ share_string }}.">Reddit</a>
+
+	<p>
+		<div class="fb-comments" data-href="{{ request.build_absolute_uri }}" data-numposts="5"></div>
+	</p>
+	<p>
+		<div class="fb-like" data-href="{{ request.build_absolute_uri }}" data-layout="button_count" data-action="like" data-show-faces="true" data-share="false"></div>
+	</p>
+</div>
+
+{% endblock content %}

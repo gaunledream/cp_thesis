@@ -1,0 +1,70 @@
+   {% load staticfiles %}
+
+   <!-- Static navbar -->
+   <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+         <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="{% url 'people:login' %}"><img style="height:47px" alt="CPinN" src="/static/img/brand.png"></a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="{% url 'people:login' %}">Home</a></li>
+            <form class="navbar-form navbar-left" role="search" method="GET" action="{% url "posts:list" %}">
+      		 <div class="form-group">
+          	<input type="text" class="form-control" placeholder="Search" name="q">
+		</div>
+	   </form>
+      {% if request.user.is_authenticated %}
+      <li role="button" class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-haspopup="true" aria-expanded="false">My Serofero<span class="caret"></span></a>
+	      <ul class="dropdown-menu"> 
+         <li><a  href="{% url 'people:my_profile' pk=request.user.id%}">ME</a></li> <! -- namespace for url might be good here -->
+	 {% if not request.user.village.is_verified %}
+	 <li><a href="{% url 'people:update_village' %}">Set your Village</a></li>
+	 {% endif %}
+	 {% if not request.user.school.is_verified %}
+	<li><a href="{% url 'people:update_school' %}">Set your School</a></li>
+	 {% endif %}            
+	  </ul>
+      </li>
+      {% endif %}
+     <li role="button" class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-haspopup="true" aria-expanded="false">Students<span class="caret"></span></a>
+       <ul class="dropdown-menu">
+         <li><a  href="{% url 'student_list' %}">Students</a></li> <! -- namespace for url might be good here -->
+         <li><a href="{% url 'student_add' %}">Create Student</a></li>
+         <li><a href="{% url 'studentneed_list' %}">Add Students Needs</a></li>
+         <li><a href="{% url 'student_local_list' %}">Local Students</a></li><! -- village and school student in one place -->
+       </ul>
+     </li>
+	   <li role="button" class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-haspopup="true" aria-expanded="false">Posts<span class="caret"></span></a>
+		   <ul class="dropdown-menu">
+			   <li><a  href="{% url 'posts:list' %}">Posts</a></li>
+	 	           <li><a href="{% url 'posts:create' %}">Create</a></li>
+			   <li><a href="{% url 'posts:posts_village_list' %}">Village Posts</a></li>
+               <li><a href="{% url 'posts:posts_school_list' %}">School Posts</a></li>
+		     	   
+		</ul>
+	   </li>
+	   <li><a href="{% url 'people:about' %}">About</a></li>
+       <li><a href="{% url 'people:contact' %}">Contact</a></li>
+	
+          </ul>
+
+
+          <ul class="nav navbar-nav navbar-right">
+
+      {% if request.user.is_authenticated %}
+		<li><a href="{% url 'people:logout' %}"><button type="button" class="btn btn-success">Logout</button></a></li>
+               {% endif %}
+            {% if not request.user.is_authenticated %}
+            <li><a href="{% url 'social:begin' 'facebook' %}?next={{next}}"><button type="button" class="btn btn-warning">Login with Facebook</button></a></li>
+            {% endif %}
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>

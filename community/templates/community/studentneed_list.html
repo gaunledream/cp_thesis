@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+<div class="col-sm-8 col-sm-offset-2 text-center" style="background-color: rgb(204, 204, 204)">
+<form method="POST" action="">{% csrf_token %}
+{{formset.management_form}}
+{% for form in formset %}
+<p class="lead"><mark>Each need in Detail:</mark></p>
+<hr />
+	{{form.as_p}}
+	
+{% endfor %}
+<input type="submit" value="Update" class="btn" />
+</form>
+</div>
+</div>
+{% endblock content %}

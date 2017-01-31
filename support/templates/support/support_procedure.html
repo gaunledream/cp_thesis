@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load i18n %}
+<script>
+{% block jquery %}
+    var clientToken = "{{ client_token }}";
+    braintree.setup(clientToken, "dropin", {
+      container: "payment-form"
+});
+{% endblock %}
+</script>
+{% block content %}
+
+
+	{% if not user_can_continue %}
+	<div class="col-sm-6">
+		<p class="lead">Donate as Guest</p>
+
+        <form method="POST" action="">{% csrf_token %}
+            {{form}}
+            <input type="submit" class="btn btn-success" value="Continue as guest" />
+        </form>
+    </div>
+	
+	{% else %}
+	<div class="col-sm-4 col-sm-offset-4 text-center">
+        </p>
+        <br /> <br />
+        <form id="checkout" method="POST" action="{% url 'finalize-support' %}">{% csrf_token %}
+        <!-- <input type="hidden" name="payment_token" value="ABC" /> -->
+        <div id="payment-form"></div>
+        <label class="card-label credit-card-number-label" for="donation-amount">
+            <span class="field-name">Donation Sum:</span>
+            <input id="donation-amount" name="donation-amount" class="card-field" inputmode="numeric" placeholder="At least 1$ (US)" autocomplete="off">
+            <span class="payment-method-icon"></span>
+            <div class="invalid-bottom-bar"></div>
+        </label>
+        <p><button type='submit'>Submit Your Support!</button><br />
+        </p>
+        </form>
+	
+	</div>
+    {% endif %}
+{% endblock content %}

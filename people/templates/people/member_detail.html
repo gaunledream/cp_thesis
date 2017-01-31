@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load urlify %}
+{% block head_title %}
+{{ object.username }} | {{ block.super }}
+{% endblock head_title %}
+{% block content %}
+<div class='col-sm-8 col-sm-offset-2 jumbotron text-center'>
+<h1>{{object.username}}</h1>
+<dl><dt>Email:</dt>
+	<dd>{{object.email}}</dd>
+	<dt>Name:</dt>
+	<dd>{{object.name}}</dd>
+	<dt>Village:</dt>
+	<dd>{{object.village}}{% if object.is_village_admin %} - Admin {% endif %}</dd>
+	<dt>School:</dt>
+	<dd>{{object.school}}{% if object.is_school_admin %} - Admin {% endif %}</dd>
+	<dt>Date Joined:</dt>
+	<dd>{{object.date_joined}}</dd>
+</dl>
+<p class="lead">Member profile are private! This page is accessible only to you!"</p>
+</div>
+<hr />
+{% endblock content %}

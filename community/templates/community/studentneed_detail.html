@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+<div class='col-sm-8 col-sm-offset-2'>
+<div class="jumbotron">
+<h1>Need Detail:</h1>
+<dl>
+	<dt>Need:</dt>
+	<dd>{{object}}</dd>
+	<dt>Description:</dt>
+	<dd>{{object.description}}</dd>
+	<dt>Achievement:</dt>
+	<dd>{{object.achievement}}/{{object.target}} {{object.measurement}}</dd>
+</dl>
+		{% if user and not user.is_anonymous %}
+			{% if object.need.id == 2 %}
+				<a href="{% url 'sponser' pk=object.id %}"><button type="button" class="btn btn-success">Donate Me</button></a>
+			{% else %}			
+			<a href="{% url 'sponser' pk=object.id %}"><button type="button" class="btn btn-success">Sponser Me</button></a>
+			{% endif %}
+		{% else %}
+			{% if object.need.id == 2 %}
+				<a href="{% url 'sponser' pk=object.id %}"><button type="button" class="btn btn-success">Donate Me</button></a>
+			{% else %}		
+			<a href="{% url 'social:begin' 'facebook' %}?next={{request.path}}"><button type="button" class="btn btn-warning">Login to Sponser Me</button></a>
+			{% endif %}			
+		{% endif %}
+
+</div>
+{% if related_needs %}
+<div class="text-center">
+<h1>Related Needs</h1>
+{% for need in related_needs %}
+<dl>
+	<dt><a href="{% url 'studentneed_detail' pk=need.id %}">Need:</a></dt>
+	<dd>{{need}}</dd>
+	<dt>Description:</dt>
+	<dd>{{need.description|truncatechars:250}}</dd>
+</dl>
+		{% if user and not user.is_anonymous %}
+			{% if need.need.id == 2 %}
+				<a href="{% url 'sponser' pk=need.id %}"><button type="button" class="btn btn-success">Donate Me</button></a>
+			{% else %}			
+			<a href="{% url 'sponser' pk=need.id %}"><button type="button" class="btn btn-success">Sponser Me</button></a>
+			{% endif %}
+		{% else %}
+			{% if need.need.id == 2 %}
+				<a href="{% url 'sponser' pk=need.id %}"><button type="button" class="btn btn-success"></i>Donate Me</button></a>
+			{% else %}			
+			<a href="{% url 'social:begin' 'facebook' %}?next={{request.path}}"><button type="button" class="btn btn-warning">Login to Sponser Me</button></a>
+			{% endif %}			
+		{% endif %}
+{% endfor %}
+</div>
+{% endif %}
+</div>
+{% endblock content %}

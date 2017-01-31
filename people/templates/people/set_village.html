@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class='row jumbotron'>
+        <div class='col-sm-6 text-center'>
+            {% if title %}
+                <h1 class='{% if title_align_center %}text-align-center{% endif %}'>{{ title }}</h1>
+            {% endif %}
+            <form method='POST' action=''>{% csrf_token %}
+                <p class="lead">Please, tell us where you are from - and describe your village well too :)</p>
+                {{form.as_p}}
+                <input class='btn btn-default' type='submit' value='Set Your Village' />
+            </form>
+        </div>
+        <div class="col-sm-4 col-sm-offset-1">
+        <p class="lead"><u>List of Villages:</u></p>
+            {% for village in list_village %}
+                {% if not "default" in village %}
+                    <i class="fa fa-home" aria-hidden="true"></i> {{village}}<br />
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
